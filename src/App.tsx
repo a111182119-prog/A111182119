@@ -1,7 +1,9 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import Resume from "./components/Resume";
 import Itinerary from "./components/Itinerary";
 import PresentationsViewer from "./components/PresentationsViewer";
+import VideoSection from "./components/VideoSection";
 import Footer from "./components/Footer";
 
 export default function App() {
@@ -10,8 +12,10 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <Resume />
         <Itinerary />
         <PresentationsViewer />
+        <VideoSection />
       </main>
       <Footer />
     </div>

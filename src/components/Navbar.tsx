@@ -39,6 +39,9 @@ export default function Navbar() {
             <a href="#home" className="hover:text-indigo-400 transition-colors">
               首頁
             </a>
+            <a href="#resume" className="hover:text-teal-400 transition-colors">
+              簡歷
+            </a>
             <a
               href="#itinerary"
               className="hover:text-rose-400 transition-colors"
@@ -50,6 +53,12 @@ export default function Navbar() {
               className="hover:text-indigo-400 transition-colors"
             >
               專案簡報
+            </a>
+            <a
+              href="#trailer"
+              className="hover:text-rose-400 transition-colors"
+            >
+              精華影片
             </a>
           </nav>
         </div>

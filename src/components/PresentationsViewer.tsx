@@ -2,16 +2,24 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, Presentation } from "lucide-react";
 import { presentationsInfo } from "../data/presentations";
+import { Document, Page, pdfjs } from "react-pdf";
+
+// Optional: you can include these if you want text selection
+// import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+// import "react-pdf/dist/esm/Page/TextLayer.css";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export default function PresentationsViewer() {
   const [activeDeck, setActiveDeck] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [numPages, setNumPages] = useState<number | null>(null);
 
   const deck = presentationsInfo[activeDeck];
 
   const handleNextSlide = () => {
     setCurrentSlide((prev) =>
-      prev < deck.slides.length - 1 ? prev + 1 : prev,
+      prev < (numPages || deck.totalPages) - 1 ? prev + 1 : prev,
     );
   };
 
@@ -22,7 +30,14 @@ export default function PresentationsViewer() {
   const handleDeckChange = (index: number) => {
     setActiveDeck(index);
     setCurrentSlide(0);
+    setNumPages(null);
   };
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    setNumPages(numPages);
+  }
+
+  const totalDots = numPages || deck.totalPages;
 
   return (
     <section
@@ -60,12 +75,12 @@ export default function PresentationsViewer() {
           ))}
         </div>
 
-        <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-slate-900 group">
+        <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-slate-900 group flex items-center justify-center">
           {/* Deck theme background layer */}
           <div className={`absolute inset-0 opacity-20 ${deck.theme}`}></div>
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.8)_100%)]"></div>
 
-          <div className="relative h-full flex flex-col justify-center items-center p-8 sm:p-16 text-center z-10">
+          <div className="relative h-full w-full flex flex-col justify-center items-center z-10 py-6 pointer-events-none">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${activeDeck}-${currentSlide}`}
@@ -73,21 +88,28 @@ export default function PresentationsViewer() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
-                className="w-full max-w-3xl flex flex-col items-center gap-6"
+                className="w-full h-full flex flex-col items-center justify-center"
               >
-                {deck.slides[currentSlide].subtitle && (
-                  <span className="text-sm sm:text-base font-mono tracking-widest text-white/60 uppercase">
-                    {deck.slides[currentSlide].subtitle}
-                  </span>
-                )}
-                <h3 className="text-3xl sm:text-5xl font-display font-bold text-white leading-tight">
-                  {deck.slides[currentSlide].title}
-                </h3>
-                {deck.slides[currentSlide].content && (
-                  <p className="text-lg sm:text-xl text-slate-300 mt-4 max-w-2xl whitespace-pre-wrap leading-relaxed">
-                    {deck.slides[currentSlide].content}
-                  </p>
-                )}
+                <div className="pointer-events-auto h-full flex items-center justify-center overflow-hidden rounded-md shadow-2xl ring-1 ring-white/10">
+                  <Document
+                    file={deck.file}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    className="flex flex-col items-center justify-center h-full"
+                    loading={
+                      <div className="text-white/50 text-sm animate-pulse">
+                        載入簡報中...
+                      </div>
+                    }
+                  >
+                    <Page
+                      pageNumber={currentSlide + 1}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      height={400}
+                      className="max-h-full"
+                    />
+                  </Document>
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
@@ -103,17 +125,17 @@ export default function PresentationsViewer() {
 
           <button
             onClick={handleNextSlide}
-            disabled={currentSlide === deck.slides.length - 1}
+            disabled={currentSlide === totalDots - 1}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md border border-white/10 transition-all disabled:opacity-0 disabled:pointer-events-none z-20 group-hover:opacity-100 opacity-0 sm:opacity-100"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Progress / Metadata */}
-          <div className="absolute bottom-6 w-full px-8 flex justify-between items-center text-xs font-mono text-white/40 z-20">
+          <div className="absolute bottom-4 w-full px-8 flex justify-between items-center text-xs font-mono text-white/40 z-20 pointer-events-none">
             <span>{deck.author}</span>
-            <div className="flex gap-1.5">
-              {deck.slides.map((_, idx) => (
+            <div className="flex gap-1.5 flex-wrap justify-center max-w-[60%]">
+              {Array.from(new Array(totalDots)).map((_, idx) => (
                 <div
                   key={idx}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -125,7 +147,7 @@ export default function PresentationsViewer() {
               ))}
             </div>
             <span>
-              {currentSlide + 1} / {deck.slides.length}
+              {currentSlide + 1} / {totalDots}
             </span>
           </div>
         </div>
