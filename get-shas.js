@@ -14,5 +14,6 @@ const getSha = (repo, tag) => {
 
 getSha("actions/checkout", "v4");
 getSha("actions/setup-node", "v4");
-getSha("actions/upload-pages-artifact", "v3");
+getSha("actions/upload-artifact", "v4");
+getSha("actions/configure-pages", "v5");
 getSha("actions/deploy-pages", "v4");

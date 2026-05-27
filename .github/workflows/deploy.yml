@@ -24,13 +24,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+
       - name: Build project
         run: npm run build
 
+      - name: Tar files
+        run: tar --dereference --hard-dereference --directory ./dist -cvf artifact.tar .
+        
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          path: ./dist
+          name: github-pages
+          path: artifact.tar
 
   deploy:
     needs: build
