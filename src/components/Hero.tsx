@@ -40,7 +40,7 @@ export default function Hero() {
             <div className="absolute -inset-1 bg-gradient-to-tr from-indigo-500 to-fuchsia-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-700"></div>
             <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden bg-slate-800 border border-slate-700/50">
               <img
-                src="/profile.jpg"
+                src={`${import.meta.env.BASE_URL}profile.jpg`}
                 onError={(e) => {
                   e.currentTarget.src =
                     "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop";

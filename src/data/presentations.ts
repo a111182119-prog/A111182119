@@ -5,7 +5,7 @@ export const presentationsInfo = [
     author: "The Studio 專屬呈獻",
     theme:
       "bg-gradient-to-br from-slate-950 to-slate-900 border-amber-900/50 text-amber-50",
-    file: "/Dubai_Sovereign_Peak.pdf",
+    file: `${import.meta.env.BASE_URL}Dubai_Sovereign_Peak.pdf`,
     totalPages: 14,
   },
   {
@@ -14,7 +14,7 @@ export const presentationsInfo = [
     author: "Made with GAMMA",
     theme:
       "bg-gradient-to-br from-indigo-950 to-blue-900 border-indigo-500/30 text-indigo-50",
-    file: "/isvzxa5en9ynsp9.pdf",
+    file: `${import.meta.env.BASE_URL}isvzxa5en9ynsp9.pdf`,
     totalPages: 10,
   },
   {
@@ -23,7 +23,7 @@ export const presentationsInfo = [
     author: "尊榮私人訂製",
     theme:
       "bg-gradient-to-br from-red-950 to-rose-950 border-rose-900/50 text-rose-50",
-    file: "/杜拜頂級奢華行程分析.pdf",
+    file: `${import.meta.env.BASE_URL}杜拜頂級奢華行程分析.pdf`,
     totalPages: 10,
   },
 ];
